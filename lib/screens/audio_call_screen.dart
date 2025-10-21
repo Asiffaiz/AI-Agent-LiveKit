@@ -44,108 +44,139 @@ class _AudioCallScreenState extends State<AudioCallScreen>
   void _showCallMeDialog(BuildContext context) {
     showDialog(
       context: context,
-      builder: (context) => BackdropFilter(
-        filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
-        child: Dialog(
-          backgroundColor: Colors.transparent,
-          elevation: 0,
-          child: Container(
-            padding: const EdgeInsets.all(20),
-            decoration: BoxDecoration(
-              color: Colors.white.withOpacity(0.2),
-              borderRadius: BorderRadius.circular(20),
-              border: Border.all(
-                color: Colors.white.withOpacity(0.2),
-                width: 1.5,
-              ),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withOpacity(0.1),
-                  blurRadius: 10,
-                  spreadRadius: 1,
+      builder: (context) => Dialog(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(20),
+        ),
+        elevation: 10,
+        child: Container(
+          padding: const EdgeInsets.all(24),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(20),
+            // boxShadow: [
+            //   BoxShadow(
+            //     color: Colors.purple.withOpacity(0.3),
+            //     blurRadius: 15,
+            //     spreadRadius: 5,
+            //   ),
+            // ],
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              // User icon logo at the top
+              Container(
+                width: 80,
+                height: 80,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: const Color.fromARGB(255, 144, 32, 133),
+                  // boxShadow: [
+                  //   BoxShadow(
+                  //     color: Colors.purple.withOpacity(0.3),
+                  //     blurRadius: 10,
+                  //     spreadRadius: 2,
+                  //   ),
+                  // ],
                 ),
-              ],
-            ),
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(16),
-              child: BackdropFilter(
-                filter: ImageFilter.blur(sigmaX: 8, sigmaY: 8),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    const Text(
-                      'Enter your phone number',
+                child: const Icon(
+                  Icons.person,
+                  size: 45,
+                  color: Colors.white,
+                ),
+              ),
+              const SizedBox(height: 24),
+              const Text(
+                'Enter your phone number',
+                style: TextStyle(
+                  color: Color.fromARGB(255, 144, 32, 133),
+                  fontSize: 14,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              const SizedBox(height: 20),
+              TextField(
+                controller: _phoneController,
+                keyboardType: TextInputType.phone,
+                style: const TextStyle(
+                  color: Colors.black87,
+                  fontSize: 16,
+                ),
+                decoration: InputDecoration(
+                  hintText: 'Phone number',
+                  hintStyle: TextStyle(color: Colors.grey.shade500),
+                  prefixIcon: const Icon(
+                    Icons.phone,
+                    color: Color.fromARGB(255, 144, 32, 133),
+                  ),
+                  filled: true,
+                  fillColor: Colors.grey.shade100,
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                    borderSide: BorderSide.none,
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                    borderSide: const BorderSide(
+                      color: Color.fromARGB(255, 144, 32, 133),
+                      width: 2,
+                    ),
+                  ),
+                  contentPadding: const EdgeInsets.symmetric(vertical: 16),
+                ),
+              ),
+              const SizedBox(height: 24),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  TextButton(
+                    onPressed: () => Navigator.pop(context),
+                    style: TextButton.styleFrom(
+                      foregroundColor: Colors.grey.shade700,
+                    ),
+                    child: const Text('Cancel'),
+                  ),
+                  const SizedBox(width: 16),
+                  ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: const Color.fromARGB(255, 144, 32, 133),
+                      foregroundColor: Colors.white,
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 24,
+                        vertical: 12,
+                      ),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      elevation: 3,
+                    ),
+                    onPressed: () {
+                      // Process phone number here
+                      if (_phoneController.text.isNotEmpty) {
+                        // Call service would be implemented here
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content:
+                                Text('Calling you at ${_phoneController.text}'),
+                            backgroundColor:
+                                const Color.fromARGB(255, 144, 32, 133),
+                          ),
+                        );
+                      }
+                      Navigator.pop(context);
+                    },
+                    child: const Text(
+                      'Submit',
                       style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 20,
+                        fontSize: 16,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
-                    const SizedBox(height: 20),
-                    Container(
-                      decoration: BoxDecoration(
-                        color: Colors.white.withOpacity(0.1),
-                        borderRadius: BorderRadius.circular(12),
-                        border: Border.all(
-                          color: Colors.white.withOpacity(0.2),
-                        ),
-                      ),
-                      child: TextField(
-                        controller: _phoneController,
-                        keyboardType: TextInputType.phone,
-                        style: const TextStyle(color: Colors.white),
-                        decoration: InputDecoration(
-                          hintText: 'Phone number',
-                          hintStyle:
-                              TextStyle(color: Colors.white.withOpacity(0.7)),
-                          prefixIcon:
-                              const Icon(Icons.phone, color: Colors.white),
-                          border: InputBorder.none,
-                          contentPadding:
-                              const EdgeInsets.symmetric(vertical: 16),
-                        ),
-                      ),
-                    ),
-                    const SizedBox(height: 20),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: [
-                        TextButton(
-                          onPressed: () => Navigator.pop(context),
-                          style: TextButton.styleFrom(
-                            foregroundColor: Colors.white,
-                          ),
-                          child: const Text('Cancel'),
-                        ),
-                        const SizedBox(width: 16),
-                        _buildGlassmorphicButton(
-                          icon: const Icon(
-                            Icons.check,
-                            color: Colors.white,
-                            size: 18,
-                          ),
-                          label: 'Submit',
-                          onPressed: () {
-                            // Process phone number here
-                            if (_phoneController.text.isNotEmpty) {
-                              // Call service would be implemented here
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(
-                                  content: Text(
-                                      'Calling you at ${_phoneController.text}'),
-                                  backgroundColor: Colors.purple.shade300,
-                                ),
-                              );
-                            }
-                            Navigator.pop(context);
-                          },
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
+                  ),
+                ],
               ),
-            ),
+            ],
           ),
         ),
       ),
