@@ -1,6 +1,7 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -43,36 +44,110 @@ class _AudioCallScreenState extends State<AudioCallScreen>
   void _showCallMeDialog(BuildContext context) {
     showDialog(
       context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Enter your phone number'),
-        content: TextField(
-          controller: _phoneController,
-          keyboardType: TextInputType.phone,
-          decoration: const InputDecoration(
-            hintText: 'Phone number',
-            prefixIcon: Icon(Icons.phone),
+      builder: (context) => BackdropFilter(
+        filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
+        child: Dialog(
+          backgroundColor: Colors.transparent,
+          elevation: 0,
+          child: Container(
+            padding: const EdgeInsets.all(20),
+            decoration: BoxDecoration(
+              color: Colors.white.withOpacity(0.2),
+              borderRadius: BorderRadius.circular(20),
+              border: Border.all(
+                color: Colors.white.withOpacity(0.2),
+                width: 1.5,
+              ),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.1),
+                  blurRadius: 10,
+                  spreadRadius: 1,
+                ),
+              ],
+            ),
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(16),
+              child: BackdropFilter(
+                filter: ImageFilter.blur(sigmaX: 8, sigmaY: 8),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    const Text(
+                      'Enter your phone number',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    const SizedBox(height: 20),
+                    Container(
+                      decoration: BoxDecoration(
+                        color: Colors.white.withOpacity(0.1),
+                        borderRadius: BorderRadius.circular(12),
+                        border: Border.all(
+                          color: Colors.white.withOpacity(0.2),
+                        ),
+                      ),
+                      child: TextField(
+                        controller: _phoneController,
+                        keyboardType: TextInputType.phone,
+                        style: const TextStyle(color: Colors.white),
+                        decoration: InputDecoration(
+                          hintText: 'Phone number',
+                          hintStyle:
+                              TextStyle(color: Colors.white.withOpacity(0.7)),
+                          prefixIcon:
+                              const Icon(Icons.phone, color: Colors.white),
+                          border: InputBorder.none,
+                          contentPadding:
+                              const EdgeInsets.symmetric(vertical: 16),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 20),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        TextButton(
+                          onPressed: () => Navigator.pop(context),
+                          style: TextButton.styleFrom(
+                            foregroundColor: Colors.white,
+                          ),
+                          child: const Text('Cancel'),
+                        ),
+                        const SizedBox(width: 16),
+                        _buildGlassmorphicButton(
+                          icon: const Icon(
+                            Icons.check,
+                            color: Colors.white,
+                            size: 18,
+                          ),
+                          label: 'Submit',
+                          onPressed: () {
+                            // Process phone number here
+                            if (_phoneController.text.isNotEmpty) {
+                              // Call service would be implemented here
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content: Text(
+                                      'Calling you at ${_phoneController.text}'),
+                                  backgroundColor: Colors.purple.shade300,
+                                ),
+                              );
+                            }
+                            Navigator.pop(context);
+                          },
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            ),
           ),
         ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: const Text('Cancel'),
-          ),
-          TextButton(
-            onPressed: () {
-              // Process phone number here
-              if (_phoneController.text.isNotEmpty) {
-                // Call service would be implemented here
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                      content: Text('Calling you at ${_phoneController.text}')),
-                );
-              }
-              Navigator.pop(context);
-            },
-            child: const Text('Submit'),
-          ),
-        ],
       ),
     );
   }
@@ -127,6 +202,77 @@ class _AudioCallScreenState extends State<AudioCallScreen>
       _animationController.duration = const Duration(seconds: 2);
       _animationController.repeat(reverse: true);
     }
+  }
+
+  // Build a shiny glassmorphic button with icon and label
+  Widget _buildGlassmorphicButton({
+    required Widget icon,
+    required String label,
+    required VoidCallback onPressed,
+  }) {
+    return Container(
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(30),
+        boxShadow: [
+          BoxShadow(
+            color: const Color.fromARGB(255, 211, 120, 227).withOpacity(0.8),
+            blurRadius: 2,
+            spreadRadius: 0,
+          ),
+        ],
+      ),
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(30),
+        child: BackdropFilter(
+          filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+          child: Container(
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+                colors: [
+                  const Color.fromARGB(255, 144, 32, 133).withOpacity(0.3),
+                  Colors.white.withOpacity(0.1),
+                ],
+              ),
+              borderRadius: BorderRadius.circular(30),
+              border: Border.all(
+                color: Colors.white.withOpacity(0.4),
+                width: 1.5,
+              ),
+            ),
+            child: Material(
+              color: Colors.transparent,
+              child: InkWell(
+                onTap: onPressed,
+                splashColor: Colors.white.withOpacity(0.2),
+                highlightColor: Colors.white.withOpacity(0.1),
+                child: Padding(
+                  padding:
+                      const EdgeInsets.symmetric(vertical: 16, horizontal: 24),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      icon,
+                      const SizedBox(width: 10),
+                      Text(
+                        label,
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.w600,
+                          fontSize: 16,
+                          letterSpacing: 0.5,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
   }
 
   @override
@@ -189,8 +335,8 @@ class _AudioCallScreenState extends State<AudioCallScreen>
               const SizedBox(height: 40),
               // Audio Visualizer
               Container(
-                height: 200,
-                width: 200,
+                height: 180,
+                width: 180,
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
                   gradient: RadialGradient(
@@ -269,39 +415,31 @@ class _AudioCallScreenState extends State<AudioCallScreen>
                 },
               ),
               const Spacer(),
-              // Dial In and Call Me buttons
+              // Glassmorphic Dial In and Call Me buttons
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 24.0),
                 child: Row(
                   children: [
                     Expanded(
-                      child: ElevatedButton.icon(
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.white,
-                          foregroundColor: Colors.indigo,
-                          padding: const EdgeInsets.symmetric(vertical: 12),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(12),
-                          ),
+                      child: _buildGlassmorphicButton(
+                        icon: const Icon(
+                          Icons.dialpad_rounded,
+                          color: Colors.white,
+                          size: 20,
                         ),
-                        icon: Icon(Icons.dialpad),
-                        label: const Text('Dial In'),
+                        label: 'Dial In',
                         onPressed: _dialIn,
                       ),
                     ),
                     const SizedBox(width: 16),
                     Expanded(
-                      child: ElevatedButton.icon(
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.white,
-                          foregroundColor: Colors.indigo,
-                          padding: const EdgeInsets.symmetric(vertical: 12),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(12),
-                          ),
+                      child: _buildGlassmorphicButton(
+                        icon: const Icon(
+                          Icons.call,
+                          color: Colors.white,
+                          size: 20,
                         ),
-                        icon: const FaIcon(FontAwesomeIcons.phoneVolume),
-                        label: const Text('Call Me'),
+                        label: 'Call Me',
                         onPressed: () => _showCallMeDialog(context),
                       ),
                     ),

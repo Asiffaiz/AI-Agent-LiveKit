@@ -17,14 +17,15 @@ class Button extends StatelessWidget {
   Widget build(BuildContext ctx) => TextButton(
         onPressed: isProgressing ? null : onPressed,
         style: TextButton.styleFrom(
-          backgroundColor: Theme.of(ctx).buttonTheme.colorScheme?.surface,
+          // backgroundColor: Theme.of(ctx).buttonTheme.colorScheme?.surface,
+          backgroundColor: Colors.indigo,
           foregroundColor: Colors.white,
           // surfaceTintColor: Colors.white,
           disabledForegroundColor: Colors.white,
           // disabledIconColor: Colors.white,
           padding: const EdgeInsets.symmetric(horizontal: 50, vertical: 15),
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(8),
+            borderRadius: BorderRadius.circular(24),
           ),
         ),
         child: Row(
