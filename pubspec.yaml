@@ -48,6 +48,7 @@ dependencies:
   logging: ^1.3.0
   siri_wave: ^2.3.0
   font_awesome_flutter: ^10.9.1
+  # fluttertoast: ^9.0.0
 
 dev_dependencies:
   flutter_test:

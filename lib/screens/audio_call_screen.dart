@@ -115,6 +115,20 @@ class _AudioCallScreenState extends State<AudioCallScreen>
     }
   }
 
+  // Update UI when connection state changes
+  void _updateUIBasedOnConnectionState(
+      app_ctrl.ConnectionState connectionState) {
+    if (connectionState == app_ctrl.ConnectionState.disconnected &&
+        isCallActive) {
+      setState(() {
+        isCallActive = false;
+      });
+      // Reset animation to slower speed
+      _animationController.duration = const Duration(seconds: 2);
+      _animationController.repeat(reverse: true);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -231,12 +245,28 @@ class _AudioCallScreenState extends State<AudioCallScreen>
               ),
               const SizedBox(height: 40),
               // Talk Now / Cancel Button
-              Button(
-                text: isCallActive ? 'Cancel' : 'Talk Now',
-                onPressed: _toggleCall,
-                isProgressing:
-                    context.watch<app_ctrl.AppCtrl>().connectionState ==
-                        app_ctrl.ConnectionState.connecting,
+              Builder(
+                builder: (context) {
+                  // Listen for connection state changes
+                  final connectionState =
+                      context.watch<app_ctrl.AppCtrl>().connectionState;
+
+                  // Update UI based on connection state
+                  WidgetsBinding.instance.addPostFrameCallback((_) {
+                    _updateUIBasedOnConnectionState(connectionState);
+                  });
+
+                  return Button(
+                    text: isCallActive
+                        ? connectionState == app_ctrl.ConnectionState.connecting
+                            ? 'Connecting'
+                            : 'Disconnect'
+                        : 'Talk Now',
+                    onPressed: _toggleCall,
+                    isProgressing:
+                        connectionState == app_ctrl.ConnectionState.connecting,
+                  );
+                },
               ),
               const Spacer(),
               // Dial In and Call Me buttons
@@ -254,7 +284,7 @@ class _AudioCallScreenState extends State<AudioCallScreen>
                             borderRadius: BorderRadius.circular(12),
                           ),
                         ),
-                        icon: const FaIcon(FontAwesomeIcons.phone),
+                        icon: Icon(Icons.dialpad),
                         label: const Text('Dial In'),
                         onPressed: _dialIn,
                       ),

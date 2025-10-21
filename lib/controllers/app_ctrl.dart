@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+// import 'package:fluttertoast/fluttertoast.dart';
 import 'package:intl/intl.dart';
 import 'package:livekit_client/livekit_client.dart' as sdk;
 import 'package:livekit_components/livekit_components.dart' as components;
@@ -136,6 +137,20 @@ class AppCtrl extends ChangeNotifier {
       // Check if room disconnected
       if (room.connectionState == sdk.ConnectionState.disconnected) {
         _logger.warning("Room disconnected - checking reason");
+        // Reset UI state when room disconnects
+        connectionState = ConnectionState.disconnected;
+
+        // Show toast message to inform the user
+        // Fluttertoast.showToast(
+        //     msg: "Agent disconnected. Please try again later.",
+        //     toastLength: Toast.LENGTH_LONG,
+        //     gravity: ToastGravity.BOTTOM,
+        //     timeInSecForIosWeb: 3,
+        //     backgroundColor: Colors.red,
+        //     textColor: Colors.white,
+        //     fontSize: 16.0);
+
+        notifyListeners();
       }
 
       notifyListeners();
@@ -144,6 +159,20 @@ class AppCtrl extends ChangeNotifier {
     // Add a listener for disconnection events
     room.createListener().on<sdk.RoomDisconnectedEvent>((event) {
       _logger.severe("Room disconnected event received");
+      // Reset UI state when disconnection event is received
+      connectionState = ConnectionState.disconnected;
+
+      // Show toast message to inform the user about the disconnection
+      // Fluttertoast.showToast(
+      //     msg: "Connection to agent lost. Please try again later.",
+      //     toastLength: Toast.LENGTH_LONG,
+      //     gravity: ToastGravity.BOTTOM,
+      //     timeInSecForIosWeb: 3,
+      //     backgroundColor: Colors.red,
+      //     textColor: Colors.white,
+      //     fontSize: 16.0);
+
+      notifyListeners();
     });
 
     _roomListenersInitialized = true;
@@ -253,6 +282,27 @@ class AppCtrl extends ChangeNotifier {
     _logger.info("Starting 60-second timer to check for AGENT participant...");
 
     _agentConnectionTimer = Timer.periodic(const Duration(seconds: 1), (timer) {
+      // First check if room is still connected
+      if (room.connectionState == sdk.ConnectionState.disconnected) {
+        _logger
+            .warning("Room disconnected during agent check, cancelling timer");
+        _cancelAgentTimer();
+        connectionState = ConnectionState.disconnected;
+
+        // Show toast message to inform the user
+        // Fluttertoast.showToast(
+        //     msg: "Connection lost while waiting for agent.",
+        //     toastLength: Toast.LENGTH_LONG,
+        //     gravity: ToastGravity.BOTTOM,
+        //     timeInSecForIosWeb: 3,
+        //     backgroundColor: Colors.red,
+        //     textColor: Colors.white,
+        //     fontSize: 16.0);
+
+        notifyListeners();
+        return;
+      }
+
       // Log detailed information about remote participants every 5 seconds
       if (timer.tick % 5 == 0) {
         _logger
@@ -291,6 +341,17 @@ class AppCtrl extends ChangeNotifier {
         _logger.warning(
             "No AGENT participant found after 60 seconds, disconnecting...");
         _cancelAgentTimer();
+
+        // Show toast message to inform the user about the timeout
+        // Fluttertoast.showToast(
+        //     msg: "Could not connect to an agent. Please try again later.",
+        //     toastLength: Toast.LENGTH_LONG,
+        //     gravity: ToastGravity.BOTTOM,
+        //     timeInSecForIosWeb: 3,
+        //     backgroundColor: Colors.orange,
+        //     textColor: Colors.white,
+        //     fontSize: 16.0);
+
         disconnect();
       }
     });
