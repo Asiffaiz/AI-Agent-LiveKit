@@ -226,7 +226,7 @@ class AppCtrl extends ChangeNotifier {
       _logger.severe('Connection error: $error');
 
       connectionState = ConnectionState.disconnected;
-      appScreenState = AppScreenState.welcome;
+      // appScreenState = AppScreenState.welcome;
       notifyListeners();
     }
   }

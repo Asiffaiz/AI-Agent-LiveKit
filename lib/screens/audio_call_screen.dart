@@ -117,40 +117,48 @@ class _AudioCallScreenState extends State<AudioCallScreen>
 
   @override
   Widget build(BuildContext context) {
-    return Material(
-      child: Container(
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-            colors: [
-              Colors.blue.shade100,
-              Colors.purple.shade100,
-            ],
-          ),
+    return Container(
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [
+            Colors.blue.shade100,
+            Colors.purple.shade100,
+          ],
         ),
-        child: SafeArea(
+      ),
+      child: Scaffold(
+        backgroundColor: Colors.transparent,
+        appBar: AppBar(
+          title: const Text('VOICE ADMINS'),
+          centerTitle: true,
+          backgroundColor: Colors.transparent,
+          elevation: 0,
+          iconTheme: const IconThemeData(color: Colors.white),
+        ),
+        body: SafeArea(
           child: Column(
             children: [
-              Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    IconButton(
-                      icon: const Icon(Icons.menu),
-                      onPressed: () {},
-                    ),
-                    IconButton(
-                      icon: const Icon(Icons.settings),
-                      onPressed: () {},
-                    ),
-                  ],
-                ),
-              ),
-              const Spacer(),
+              // Padding(
+              //   padding: const EdgeInsets.all(16.0),
+              //   child: Row(
+              //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              //     children: [
+              //       IconButton(
+              //         icon: const Icon(Icons.menu),
+              //         onPressed: () {},
+              //       ),
+              //       IconButton(
+              //         icon: const Icon(Icons.settings),
+              //         onPressed: () {},
+              //       ),
+              //     ],
+              //   ),
+              // ),
+              // const Spacer(),
               const Text(
-                'Hello, Marry!',
+                'Hello, Asif!',
                 style: TextStyle(
                   fontSize: 24,
                   fontWeight: FontWeight.bold,
