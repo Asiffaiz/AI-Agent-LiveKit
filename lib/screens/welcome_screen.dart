@@ -60,7 +60,12 @@ class WelcomeScreen extends StatelessWidget {
                     return buttons.Button(
                       text: isProgressing ? 'Connecting' : 'Start call',
                       isProgressing: isProgressing,
-                      onPressed: () => ctx.read<ctrl.AppCtrl>().connect(),
+                      onPressed: () {
+                        // Navigate to audio call screen instead of connecting directly
+                        final appCtrl = ctx.read<ctrl.AppCtrl>();
+                        appCtrl.appScreenState = ctrl.AppScreenState.audioCall;
+                        appCtrl.notifyListeners();
+                      },
                     );
                   },
                 ),

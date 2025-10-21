@@ -11,7 +11,7 @@ import 'package:uuid/uuid.dart';
 import '../exts.dart';
 import '../services/token_service.dart';
 
-enum AppScreenState { welcome, agent }
+enum AppScreenState { welcome, agent, audioCall }
 
 enum AgentScreenState { visualizer, transcription }
 
@@ -212,7 +212,11 @@ class AppCtrl extends ChangeNotifier {
       }
 
       connectionState = ConnectionState.connected;
-      appScreenState = AppScreenState.agent;
+
+      // If we're in audio call screen, stay there, otherwise go to agent screen
+      if (appScreenState != AppScreenState.audioCall) {
+        appScreenState = AppScreenState.agent;
+      }
 
       // Start the timer to check for AGENT participant
       _startAgentConnectionTimer();
@@ -233,7 +237,11 @@ class AppCtrl extends ChangeNotifier {
 
     // Update states
     connectionState = ConnectionState.disconnected;
-    appScreenState = AppScreenState.welcome;
+
+    // If we're in audio call screen, stay there, otherwise go back to welcome
+    if (appScreenState != AppScreenState.audioCall) {
+      appScreenState = AppScreenState.welcome;
+    }
     agentScreenState = AgentScreenState.visualizer;
 
     notifyListeners();
